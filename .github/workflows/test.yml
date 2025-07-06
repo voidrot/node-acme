@@ -8,6 +8,10 @@ on:
     branches:
       - '**'
 
+env:
+  NODE_EXTRA_CA_CERTS: '["./test/certs/"]'
+  NODE_TLS_REJECT_UNAUTHORIZED: '0'
+
 jobs:
   test:
     runs-on: ubuntu-latest
