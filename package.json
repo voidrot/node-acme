@@ -1,0 +1,40 @@
+{
+  "name": "node-acme",
+  "version": "0.0.1",
+  "description": "ACME client for NodeJS",
+  "keywords": [
+    "ACME"
+  ],
+  "homepage": "https://github.com/voidrot/node-acme#readme",
+  "bugs": {
+    "url": "https://github.com/voidrot/node-acme/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/voidrot/node-acme.git"
+  },
+  "license": "MIT",
+  "author": "Buck Brady <development@buckbrady.com>",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "lint": "eslint . --fix"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.30.1",
+    "@stylistic/eslint-plugin": "^5.1.0",
+    "@types/node": "^24.0.10",
+    "eslint": "^9.30.1",
+    "testcontainers": "^11.1.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.35.1",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@peculiar/x509": "^1.12.4",
+    "jose": "^6.0.11"
+  }
+}
