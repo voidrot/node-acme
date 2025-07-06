@@ -1,6 +1,5 @@
 import { describe, it, expect, inject } from 'vitest'
 import AcmeClient from '../src'
-import { cp } from 'fs'
 
 describe('environment', () => {
   it('api should be defined', () => {
