@@ -60,5 +60,27 @@ describe('node-acme', () => {
       expect(accountUrl.startsWith('https://')).toBe(true)
       expect(privateKey).toBeDefined()
     })
+
+    it('should create a new account with custom retry config', async () => {
+      const client = new AcmeClient(inject('ACME_API'), {
+        maxRetries: 1,
+        initialDelay: 100,
+        maxDelay: 1000,
+        backoffFactor: 2
+      })
+      await client.init()
+      const { accountUrl, privateKey } = await client.createAccount('test-retry@voidrot.dev')
+      expect(typeof accountUrl).toBe('string')
+      expect(accountUrl.startsWith('https://')).toBe(true)
+      expect(privateKey).toBeDefined()
+    })
+
+    it('should handle account creation with default retry config', async () => {
+      const client = new AcmeClient(inject('ACME_API'))
+      expect(client.retryConfig.maxRetries).toBe(3)
+      expect(client.retryConfig.initialDelay).toBe(1000)
+      expect(client.retryConfig.maxDelay).toBe(10000)
+      expect(client.retryConfig.backoffFactor).toBe(2)
+    })
   })
 })
