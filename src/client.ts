@@ -11,6 +11,7 @@ export interface AcmeDirectory {
     website?: string
     caaIdentities?: string[]
     externalAccountRequired?: boolean
+    profiles?: string[]
   }
 }
 
@@ -24,6 +25,7 @@ interface RetryConfig {
 export class AcmeClient {
   directoryUrl: string
   directory?: AcmeDirectory
+  directoryProfile?: string
   accountUrl?: string
   privateKey?: CryptoKey
   retryConfig: RetryConfig
@@ -41,6 +43,7 @@ export class AcmeClient {
 
   async init(): Promise<void> {
     await this.getDirectory()
+    // TODO: check if profiles are supported and set default profile if needed. if available, set default profile to 'tlsserver' or similar
   }
 
   private async wait(ms: number): Promise<void> {
@@ -66,6 +69,11 @@ export class AcmeClient {
       throw new Error('Incomplete ACME directory response')
     }
 
+    let profiles: string[] | undefined
+    if (data['meta']['profiles']) {
+      profiles = Object.keys(data['meta']['profiles'])
+    }
+
     this.directory = {
       newNonce: data['newNonce'],
       newAccount: data['newAccount'],
@@ -76,7 +84,8 @@ export class AcmeClient {
         termsOfService: data['meta']['termsOfService'],
         website: data['meta']?.website,
         caaIdentities: data['meta']?.caaIdentities || [],
-        externalAccountRequired: data['meta']?.externalAccountRequired || false
+        externalAccountRequired: data['meta']?.externalAccountRequired || false,
+        profiles
       }
     }
   }
@@ -135,6 +144,22 @@ export class AcmeClient {
   async setAccount(accountUrl: string, privateKey: CryptoKey): Promise<void> {
     this.accountUrl = accountUrl
     this.privateKey = privateKey
+  }
+
+  async showProfiles(): Promise<string[]> {
+    if (!this.directory) await this.getDirectory()
+    if (!this.directory!.meta.profiles) {
+      throw new Error('No profiles available in ACME directory')
+    }
+    return this.directory!.meta.profiles
+  }
+
+  async setProfile(profile: string): Promise<void> {
+    if (!this.directory) await this.getDirectory()
+    if (!this.directory!.meta.profiles || !this.directory!.meta.profiles.includes(profile)) {
+      throw new Error(`Profile "${profile}" not found in ACME directory`)
+    }
+    this.directoryProfile = profile
   }
 
   async createAccount(email: string): Promise<{ accountUrl: string, privateKey: CryptoKey }> {
