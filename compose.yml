@@ -7,9 +7,27 @@ services:
       - 15000:15000 # HTTPS Management API
     environment:
       - PEBBLE_VA_NOSLEEP=1
+    volumes:
+      - ./test/config/pebble-config.json:/config/pebble-config.json:ro
     networks:
       acmenet:
         ipv4_address: 10.30.50.2
+
+  pebble-retry:
+    image: ghcr.io/letsencrypt/pebble:latest
+    command: -config test/config/pebble-config.json -strict -dnsserver 10.30.50.3:8053
+    ports:
+      - 16000:14000 # HTTPS ACME API
+      - 17000:15000 # HTTPS Management API
+    environment:
+      - PEBBLE_VA_NOSLEEP=1
+      - PEBBLE_WFE_NONCEREJECT=80
+    volumes:
+      - ./test/config/pebble-config.json:/config/pebble-config.json:ro
+    networks:
+      acmenet:
+        ipv4_address: 10.30.50.4
+
   challtestsrv:
     image: ghcr.io/letsencrypt/pebble-challtestsrv:latest
     command: -defaultIPv6 "" -defaultIPv4 10.30.50.3
