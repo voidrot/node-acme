@@ -48,6 +48,25 @@ describe('node-acme', () => {
       expect(client.directory).toHaveProperty('newOrder')
       expect(client.directory).toHaveProperty('revokeCert')
       expect(client.directory).toHaveProperty('keyChange')
+      expect(client.directory).toHaveProperty('meta')
+    })
+    it('should handle directory with profiles', async () => {
+      const client = new AcmeClient(inject('ACME_API'))
+      await client.init()
+      expect(client.directory!.meta.profiles).toBeDefined()
+      expect(Array.isArray(client.directory!.meta.profiles)).toBe(true)
+      expect(client.directory!.meta.profiles!.length).toBeGreaterThan(0)
+    })
+    it('should be able to set a directory profile', async () => {
+      const client = new AcmeClient(inject('ACME_API'))
+      await client.init()
+      await client.setProfile('default')
+      expect(client.directoryProfile).toBe('default')
+    })
+    it('should throw an error if profile is not supported', async () => {
+      const client = new AcmeClient(inject('ACME_API'))
+      await client.init()
+      await expect(client.setProfile('unsupported-profile')).rejects.toThrow('Profile "unsupported-profile" not found in ACME directory')
     })
   })
 
