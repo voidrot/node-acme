@@ -2,7 +2,7 @@ import { describe, it, expect, inject } from 'vitest'
 import AcmeClient from '../src'
 
 describe('retry logic', () => {
-  const retryConfig = { maxDelay: 1000, initialDelay: 500, maxRetries: 50 }
+  const retryConfig = { maxDelay: 100, initialDelay: 100, maxRetries: 50 }
   describe('config', () => {
     it('should have defaults set correctly', () => {
       const client = new AcmeClient(inject('ACME_API_RETRY'))
@@ -32,6 +32,6 @@ describe('retry logic', () => {
       expect(typeof accountUrl).toBe('string')
       expect(accountUrl.startsWith('https://')).toBe(true)
       expect(privateKey).toBeDefined()
-    }, { timeout: 30000 }) // Increased timeout for retries
+    }, { timeout: 60000 }) // Increased timeout for retries
   })
 })

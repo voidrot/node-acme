@@ -225,4 +225,16 @@ export class AcmeClient {
       return { accountUrl, privateKey }
     }, 'createAccount')
   }
+
+  async createOrder(): Promise<void> {
+    throw new Error('createOrder not implemented yet')
+  }
+
+  async revokeCertificate(): Promise<void> {
+    throw new Error('revokeCertificate not implemented yet')
+  }
+
+  async changeKey(): Promise<void> {
+    throw new Error('changeKey not implemented yet')
+  }
 }
